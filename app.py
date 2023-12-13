@@ -1,73 +1,67 @@
 from cmath import cos, sin
 import math
 import numpy as np
-import pygame
 import random
-import mnist as mn
 import layer_def as ld
 import network as net
 from colorama import Fore, Back, Style
 
+import mnist as mn
 from keras.datasets import mnist
 
-pygame.init()
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from matplotlib.widgets import RadioButtons
+mpl.use('TkAgg')
 
-#screen settings
-screen = pygame.display.set_mode((561, 561))
-backgroundColor = [55, 55, 55]
-screen.fill(backgroundColor)
-
-appRunning = True
-delta_time = 0.0
-clock = pygame.time.Clock()
-
-#load neural network from JSON file
+#loads neural network from JSON file
 ld.load(mn.network)
 
-# create input interface array
+# creates input interface array
 outputArray = np.zeros((28, 28))
 
-commands = [Fore.RED + "Exit: 'quit'", "Train model: train (# of epochs)", "Generate: #"]
-
+# prints available commands
+commands = [Fore.RED + "Exit: 'quit'", "Train model: 'train' (# of epochs)", "Generate: Type #"]
 for cmd in commands:
     print(cmd)
+
+
+
+# sets plot style for grid
+plt.style.use('_mpl-gallery-nogrid')
+
+
+# enables interactive mode for realtime updates
+plt.ion()
+
+# creates plot and sets size to 7 x 7 inches
+fig, ax = plt.subplots()
+fig.set_size_inches(7, 7)
+
+# TODO: Make radio buttons fit better on plot screen, and remove ticks from graph
+# rax = plt.axes([0.05, 0.7, 0.15, 0.2])
+# radio = RadioButtons(rax, ('Dark Mode', 'Light Mode'))
+
+
 
 
 def initMnist(epochs):
     global inputArray
 
-    #load from JSON save file
+    #loads from JSON save file
     print(Fore.CYAN + "Loading network from JSON file...")
     ld.load(mn.network)
     print(Fore.CYAN + "Network loaded succesfully!")
 
-    #train network
+    #trains network
     mn.trainMnist(mn.network, epochs)
 
-    #save newly trained model
+    #saves newly trained model
     ld.save(mn.network)
     print(Fore.GREEN + "Network saved succesfully!")
 
 
-
-#draws window to write number
-def drawOutputArray():
-
-    #loop through input array
-    for x in range(28):
-        for y in range(28):
-            #set color according to array value
-            color = (
-                min(255, int(220 * outputArray[x][y] + 35)),
-                min(255, int(220 * outputArray[x][y] + 35)),
-                min(255, int(220 * outputArray[x][y] + 35))
-            )
-
-            #draw corresponding rectangle
-            pygame.draw.rect(screen, color, pygame.Rect((y*20), (x*20), 19, 19))
-
-
-#input users number into neural network, then output and return prediction
+#inputs users number into neural network, then output and return prediction
 def mnistPredict(value):
     global outputArray
     
@@ -89,18 +83,13 @@ def mnistPredict(value):
 
     return prediction
 
+#TODO: call set Style when radio button is clicked and change plot style accordingly
+# def setStyle(label):
+#     pass
+#
+#radio.on_clicked(setStyle)
 
-
-def update():
-    pass
-
-
-def draw():
-    drawOutputArray()
-    pass
-
-
-
+appRunning = True
 while appRunning:
 
     predValue = input(Fore.YELLOW + "::: ")
@@ -108,26 +97,27 @@ while appRunning:
     try :
         if int(predValue) <= 9 and int(predValue) >= 0:
             mnistPredict(int(predValue))
+
+            print(Fore.GREEN + "Updating plot...")
+
+            ax.imshow(outputArray)
+            fig.canvas.draw()
+            fig.canvas.flush_events()
+
+            print(Fore.GREEN + "Plot updated!" + Fore.RESET)
+
     except:
-        #try for string
+        #tries for string
         try:
             if str(predValue) == "quit":
                 appRunning = False
 
             elif str(predValue) == "train":
                 initMnist(int(input(Fore.CYAN + "Epochs: ")))
+
             else:
                 print(Fore.CYAN + "Unknown input")
+
         except:
             print(Fore.RED + "Invalid input")
         
-
-    update()
-    draw()
-
-    pygame.display.flip()
-
-    delta_time = 0.001 * clock.tick(144)
-
-
-pygame.quit()

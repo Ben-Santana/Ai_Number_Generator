@@ -21,4 +21,4 @@ pip install -r requirements.txt
 - Train: *train*
 - Exit: *quit*
 
-> ! Predictions will periodically appear in the opened window !
+> ! Predictions will periodically appear in the opened plot !
