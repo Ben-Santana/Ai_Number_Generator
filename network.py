@@ -1,4 +1,3 @@
-import json
 import numpy as np
 
 
@@ -11,24 +10,30 @@ def predict(network, input):
 
 # train through back propogation
 def train(network, loss, loss_prime, x_train, y_train, epochs = 1000, learning_rate = 0.01, verbose = True):
+
+    #initialize progress bar
     printProgressBar(0, epochs, prefix = "Progress:", suffix = "Complete", length = 50)
+
     for e in range(epochs):
         error = 0
         for x, y in zip(x_train, y_train):
-            # forward
+            # forward propagation
             output = predict(network, x)
 
-            # error
+            # calculate loss
             error += loss(y, output)
 
-            # backward
+            # backward propagation
             grad = loss_prime(y, output)
             for layer in reversed(network):
                 grad = layer.backward(grad, learning_rate)
 
         error /= len(x_train)
+
+        #update progress bar
         printProgressBar(e, epochs, prefix = "Progress:", suffix = "Complete", length = 50)
 
+    #finilize progress bar
     printProgressBar(epochs, epochs, prefix = "Progress:", suffix = "Complete", length = 50)
     print("Error = " + str(error))
 

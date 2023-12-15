@@ -17,6 +17,8 @@ network = [
     Dense(60, 28 * 28)
 ]
 
+
+# process MNIST data from tensorflow to train model with
 def preprocess_data(x, y, limit):
     # reshape and normalize input data
     x = x.reshape(x.shape[0], 28 * 28, 1)
