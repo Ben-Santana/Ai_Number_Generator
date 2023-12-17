@@ -2,8 +2,8 @@ from cmath import cos, sin
 import math
 import numpy as np
 import random
-import layer_def as ld
-import network as net
+from mll_library import layer_def as ld
+from mll_library import network as net
 from colorama import Fore, Back, Style
 
 import mnist as mn
