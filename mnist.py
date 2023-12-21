@@ -1,6 +1,7 @@
-from layer_def import Dense, Tanh, mse, mse_prime
+from mll_library import layer_def as ld
+from mll_library import network as net
+
 import numpy as np
-from network import train, predict
 
 from keras.datasets import mnist
 from keras.utils import to_categorical
@@ -10,11 +11,11 @@ from colorama import Fore, Back, Style
 
 #create network
 network = [
-    Dense(10, 30), 
-    Tanh(), 
-    Dense(30, 60), 
-    Tanh(),
-    Dense(60, 28 * 28)
+    ld.Dense(10, 30), 
+    ld.Tanh(), 
+    ld.Dense(30, 60), 
+    ld.Tanh(),
+    ld.Dense(60, 28 * 28)
 ]
 
 
@@ -36,4 +37,4 @@ def trainMnist(network, numOfEpochs):
     x_test, y_test = preprocess_data(x_test, y_test, 20)
     
     #train
-    train(network, mse, mse_prime, y_train, x_train, epochs=numOfEpochs, learning_rate=0.1)
+    net.train(network, ld.mse, ld.mse_prime, y_train, x_train, epochs=numOfEpochs, learning_rate=0.1)
